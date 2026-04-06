@@ -1,4 +1,4 @@
-package main.java.iso8583.enums;
+package iso8583.enums;
 public enum EIsoMessageClass
 {
 	/** x1xx - Autorización */

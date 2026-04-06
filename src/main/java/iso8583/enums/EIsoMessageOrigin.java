@@ -1,9 +1,9 @@
-package main.java.iso8583.enums;
+package iso8583.enums;
 public enum EIsoMessageOrigin
 {
 	/** xxx0 - Acquirer */
 	ACQUIRER(			'0',	"Acquirer"),
-	/** xxx1 - Comprador Repetición (Acquirer Repeat) */
+	/** xxx1 - Acquirer Repeat */
 	ACQUIRER_REPEAT(	'1',	"Acquirer Repeat"),
 	/** xxx2 - Issuer */
 	ISSUER(				'2',	"Issuer"),

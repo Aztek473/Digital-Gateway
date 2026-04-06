@@ -1,14 +1,24 @@
-package main.java.iso8583.builder;
+package iso8583.builder;
 import java.util.Map;
 import java.util.TreeMap;
 
-import main.java.iso8583.enums.EIsoField;
-import main.java.iso8583.enums.EIsoFieldType;
-import main.java.iso8583.enums.EIsoLengthType;
+import iso8583.enums.EIsoField;
+import iso8583.enums.EIsoFieldType;
+import iso8583.enums.EIsoLengthType;
 
 public class ISO8583Builder
 {
 	private String mti;
+	
+	public ISO8583Builder(String mti) throws Exception
+	{
+		this.mti = mti;
+	}
+	
+	public ISO8583Builder(IsoMtiBuilder mtiBuilder) throws Exception
+	{
+		this.mti = mtiBuilder.build();
+	}
 	
 	public String buildMessage(Map<Integer, String> dataFields)
 	{
@@ -21,6 +31,10 @@ public class ISO8583Builder
 		{
 			int fieldNumber = entry.getKey();
 			String rawValue = entry.getValue();
+			if( rawValue == null )
+			{
+				throw new IllegalArgumentException("El campo " + fieldNumber + " no puede ser nulo.");
+			}
 			EIsoField definition = EIsoField.fromFieldNumber(fieldNumber);
 			if( definition == null )
 			{
@@ -30,6 +44,12 @@ public class ISO8583Builder
 			messagePayload.append(formattedValue);
 		}
 		return messagePayload.toString();
+	}
+	
+	public byte[] buildMessageBytes(Map<Integer, String> dataFields)
+	{
+		String payload = buildMessage(dataFields);
+		return payload.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
 	}
 	
 	private String buildContinuousBitmap(Map<Integer, String> dataFields)
@@ -43,7 +63,7 @@ public class ISO8583Builder
 		}
 		if( hasSecondary )
 		{
-			bitArray[0] = '1';	
+			bitArray[0] = '1';
 		}
 		for( Integer fieldNumber : dataFields.keySet() )
 		{
