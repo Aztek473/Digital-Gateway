@@ -1,17 +1,20 @@
 package iso8583.builder;
+import java.util.ArrayList;
+import java.util.List;
+
 import iso8583.enums.EIsoMessageClass;
 import iso8583.enums.EIsoMessageFunction;
 import iso8583.enums.EIsoMessageOrigin;
 import iso8583.enums.EIsoVersion;
 
-public class ISO8583Parser
+public class IsoMTIBuilder
 {
 	private EIsoVersion version;
 	private EIsoMessageClass messageClass;
 	private EIsoMessageFunction function;
 	private EIsoMessageOrigin origin;
 	
-	public ISO8583Parser version(EIsoVersion version) throws Exception
+	public IsoMTIBuilder version(EIsoVersion version) throws Exception
 	{
 		if( version != null )
 		{
@@ -20,11 +23,11 @@ public class ISO8583Parser
 		}
 		else
 		{
-			throw new Exception("ISO Version is null");
+			throw new Exception("Version is null");
 		}
 	}
 	
-	public ISO8583Parser messageClass(EIsoMessageClass messageClass) throws Exception
+	public IsoMTIBuilder messageClass(EIsoMessageClass messageClass) throws Exception
 	{
 		if( messageClass != null )
 		{
@@ -33,11 +36,11 @@ public class ISO8583Parser
 		}
 		else
 		{
-			throw new Exception("ISO MessageClass is null");
+			throw new Exception("MessageClass is null");
 		}
 	}
 	
-	public ISO8583Parser function(EIsoMessageFunction function) throws Exception
+	public IsoMTIBuilder function(EIsoMessageFunction function) throws Exception
 	{
 		if( function != null )
 		{
@@ -46,11 +49,11 @@ public class ISO8583Parser
 		}
 		else
 		{
-			throw new Exception("ISO Function is null");
+			throw new Exception("Function is null");
 		}
 	}
 	
-	public ISO8583Parser origin(EIsoMessageOrigin origin) throws Exception
+	public IsoMTIBuilder origin(EIsoMessageOrigin origin) throws Exception
 	{
 		if( origin != null )
 		{
@@ -59,13 +62,13 @@ public class ISO8583Parser
 		}
 		else
 		{
-			throw new Exception("ISO Origin is null");
+			throw new Exception("Origin is null");
 		}
 	}
 	
 	public String build() throws Exception
 	{
-		java.util.List<String> missing = new java.util.ArrayList<>();
+		List<String> missing = new ArrayList<>();
 		if( version == null )
 		{
 			missing.add("Version");

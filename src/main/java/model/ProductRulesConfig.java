@@ -8,6 +8,6 @@ import java.util.List;
 @JacksonXmlRootElement(localName = "productRules")
 public record ProductRulesConfig(
     @JacksonXmlProperty(localName = "product")
-    @JacksonXmlElementWrapper(useWrapping = false) // Evita que busque un tag <products> general
+    @JacksonXmlElementWrapper(useWrapping = false)
     List<ProductRuleDTO> products
 ) {}

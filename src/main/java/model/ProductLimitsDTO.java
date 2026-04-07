@@ -3,7 +3,7 @@ package model;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public record ProductLimitsDTO(
-    @JacksonXmlProperty(isAttribute = true) 
+    @JacksonXmlProperty(isAttribute = true, localName = "currency")
     String currency,
     
     @JacksonXmlProperty(localName = "minAmount") 

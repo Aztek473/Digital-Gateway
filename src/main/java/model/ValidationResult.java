@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 
 public record ValidationResult(
@@ -7,7 +8,7 @@ public record ValidationResult(
     List<String> errors
 ) {
     public static ValidationResult success() {
-        return new ValidationResult(true, java.util.Collections.emptyList());
+        return new ValidationResult(true, Collections.emptyList());
     }
 
     public static ValidationResult failure(List<String> errors) {

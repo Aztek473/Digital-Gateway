@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import iso8583.builder.ISO8583Builder;
-import iso8583.builder.ISO8583Parser;
+import iso8583.builder.IsoMTIBuilder;
 import iso8583.enums.EIsoField;
 import iso8583.enums.EIsoMessageClass;
 import iso8583.enums.EIsoMessageFunction;
@@ -27,7 +28,7 @@ class ISO8583BuilderTest
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		ISO8583Parser mtiBuilder = new ISO8583Parser().version(EIsoVersion.V_1987) //
+		IsoMTIBuilder mtiBuilder = new IsoMTIBuilder().version(EIsoVersion.V_1987) //
 				.messageClass(EIsoMessageClass.FINANCIAL) //
 				.function(EIsoMessageFunction.REQUEST_RESPONSE) //
 				.origin(EIsoMessageOrigin.ACQUIRER);
@@ -158,7 +159,7 @@ class ISO8583BuilderTest
 			// Verificamos que contenga exactamente la misma cantidad de bytes ASCII que de caracteres
 			Assertions.assertEquals(expectedString.length(), rawBytes.length, "Un caracter ASCII equivale a 1 byte rigurosamente");
 			// Simulamos lo que haría el receptor TCP: Reconstruir usando el Encoding oficial
-			String decodedString = new String(rawBytes, java.nio.charset.StandardCharsets.US_ASCII);
+			String decodedString = new String(rawBytes, StandardCharsets.US_ASCII);
 			Assertions.assertEquals(expectedString, decodedString, "El byte array viaja codificado en ASCII correctamente, y es capaz de recuperar la trama");
 		}
 		catch (Exception e)

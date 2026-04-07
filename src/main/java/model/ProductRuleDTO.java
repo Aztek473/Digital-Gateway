@@ -3,10 +3,10 @@ package model;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public record ProductRuleDTO(
-    @JacksonXmlProperty(isAttribute = true) 
+    @JacksonXmlProperty(isAttribute = true, localName = "id")
     String id,
     
-    @JacksonXmlProperty(isAttribute = true) 
+    @JacksonXmlProperty(isAttribute = true, localName = "name")
     String name,
     
     @JacksonXmlProperty(localName = "processingCode") 
