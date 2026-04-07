@@ -1,7 +1,6 @@
 package iso8583.enums;
 public enum EIsoFieldType
 {
-	//FIXED
 	NUMERIC(),				// n
 	ALPHA(),				// a
 	ALPHANUMERIC(),			// an

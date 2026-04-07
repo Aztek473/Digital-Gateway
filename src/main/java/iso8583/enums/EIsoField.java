@@ -129,6 +129,10 @@ public enum EIsoField
 	DE_63(63, 999, EIsoLengthType.LLLVAR, EIsoFieldType.ALPHANUMERIC_SPECIAL, "Reserved Private Use"),
 	/** Message Authentication Code (MAC) - b 16 */
 	DE_64(64, 16, EIsoLengthType.FIXED, EIsoFieldType.BINARY, "Message Authentication Code (MAC)"),
+	/** Message Authentication Code (MAC) - b 16 */
+	DE_70(70, 3, EIsoLengthType.FIXED, EIsoFieldType.NUMERIC, "Network management information code"),
+	/** Original data elements - n 42 */
+	DE_90(90, 42, EIsoLengthType.FIXED, EIsoFieldType.NUMERIC, "Original data elements"),
 	/** Account Identification 1 - ans ..28 */
 	DE_102(102, 28, EIsoLengthType.LLVAR, EIsoFieldType.ALPHANUMERIC_SPECIAL, "Account Identification 1"),
 	/** Account Identification 2 - ans ..28 */

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -26,6 +27,7 @@ public class ProductRuleValidator
 	@Value("classpath:product-rules.xml")
 	private Resource rulesFile;
 	private final Map<String, ProductRuleDTO> ruleCache = new HashMap<>();
+	private final Map<String, Long> accountDailyAccumulator = new ConcurrentHashMap<>();
 	
 	@PostConstruct
 	public void init()
@@ -33,10 +35,8 @@ public class ProductRuleValidator
 		try
 		{
 			XmlMapper xmlMapper = new XmlMapper();
-			
-			//LECTURA DE XML Y LLENADO DE DTOs
+			// LECTURA DE XML Y LLENADO DE DTOs
 			ProductRulesConfig root = xmlMapper.readValue(rulesFile.getInputStream(), ProductRulesConfig.class);
-			
 			for( ProductRuleDTO rule : root.products() )
 			{
 				if( rule.requiredFields() != null )
@@ -63,7 +63,6 @@ public class ProductRuleValidator
 	{
 		List<String> errors = new ArrayList<>();
 		Map<Integer, String> fields = message.getFields();
-		
 		// 1. Validar si Processing Code esta presente
 		String processingCode = fields.get(EIsoField.DE_3.getField());
 		if( processingCode == null )
@@ -71,7 +70,6 @@ public class ProductRuleValidator
 			errors.add("El Processing Code (DE_3) es necesario.");
 			return ValidationResult.failure(errors);
 		}
-		
 		// 2. Obtengo el producto
 		ProductRuleDTO productRuleDTO = ruleCache.get(processingCode);
 		if( productRuleDTO == null )
@@ -79,7 +77,6 @@ public class ProductRuleValidator
 			errors.add("Processing Code '" + processingCode + "' no se encontro entre los productos.");
 			return ValidationResult.failure(errors);
 		}
-		
 		// 3. Validar Monto y Límites (DE_4)
 		String amountStr = fields.get(EIsoField.DE_4.getField());
 		if( amountStr != null && productRuleDTO.limits() != null )
@@ -95,13 +92,22 @@ public class ProductRuleValidator
 				{
 					errors.add("El monto " + amount + " excede al máximo permitido " + productRuleDTO.limits().maxAmount() + ".");
 				}
+				String pan = fields.get(EIsoField.DE_2.getField());
+				// VALIDACIÓN DE LÍMITE DIARIO POR PAN
+				if( pan != null )
+				{
+					long currentDaily = accountDailyAccumulator.getOrDefault(pan + "_" + productRuleDTO.id(), 0L);
+					if( currentDaily + amount > productRuleDTO.limits().dailyLimit() )
+					{
+						errors.add("Monto supera el límite diario del producto " + productRuleDTO.id() + " para la cuenta enviada.");
+					}
+				}
 			}
 			catch (NumberFormatException e)
 			{
 				errors.add("El formato numérico del Amount (DE_4) es inválido.");
 			}
 		}
-		
 		// 4. Validar Campos Obligatorios (Required Fields)
 		if( productRuleDTO.requiredFields() != null && productRuleDTO.requiredFields().fields() != null )
 		{
@@ -112,13 +118,11 @@ public class ProductRuleValidator
 				}
 			});
 		}
-		
 		// 5. Validar Horario de Disponibilidad
 		if( productRuleDTO.schedule() != null )
 		{
 			validateSchedule(productRuleDTO, errors);
 		}
-		
 		if( errors.isEmpty() )
 		{
 			return ValidationResult.success();
@@ -126,24 +130,44 @@ public class ProductRuleValidator
 		return ValidationResult.failure(errors);
 	}
 	
+	public void commitTransaction(String pan, String productId, long amount)
+	{
+		if( pan == null || productId == null )
+		{
+			return;
+		}
+		String key = pan + "_" + productId;
+		long updatedDaily = accountDailyAccumulator.getOrDefault(key, 0L) + amount;
+		accountDailyAccumulator.put(key, updatedDaily);
+	}
+	
+	public void reverseTransaction(String pan, String productId, long amount)
+	{
+		if( pan == null || productId == null )
+		{
+			return;
+		}
+		String key = pan + "_" + productId;
+		long currentDaily = accountDailyAccumulator.getOrDefault(key, 0L);
+		long restoredDaily = Math.max(0, currentDaily - amount);
+		accountDailyAccumulator.put(key, restoredDaily);
+	}
+	
 	private void validateSchedule(ProductRuleDTO productRuleDTO, List<String> errors)
 	{
 		String dayEn = LocalDate.now().getDayOfWeek().name().substring(0, 3).toUpperCase();
-		
 		// Validar Días
 		String allowedDays = productRuleDTO.schedule().availableDays();
 		if( allowedDays != null && !allowedDays.contains(dayEn) )
 		{
 			errors.add("El producto " + productRuleDTO.id() + " no está habilitado en este día.");
 		}
-		
 		// Validar Horario (Range bounds)
 		try
 		{
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 			LocalTime start = LocalTime.parse(productRuleDTO.schedule().availableFrom(), formatter);
 			LocalTime end = LocalTime.parse(productRuleDTO.schedule().availableTo(), formatter);
-			
 			LocalTime nowTime = LocalTime.now();
 			if( nowTime.isBefore(start) || nowTime.isAfter(end) )
 			{
