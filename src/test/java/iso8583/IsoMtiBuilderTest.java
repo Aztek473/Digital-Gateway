@@ -107,13 +107,13 @@ class IsoMtiBuilderTest
 	void testSetters_ThrowException_WhenNull()
 	{
 		Exception e1 = assertThrows(Exception.class, () -> mtiBuilder.version(null));
-		assertEquals("ISO Version is null", e1.getMessage());
+		assertEquals("Version is null", e1.getMessage());
 		Exception e2 = assertThrows(Exception.class, () -> mtiBuilder.messageClass(null));
-		assertEquals("ISO MessageClass is null", e2.getMessage());
+		assertEquals("MessageClass is null", e2.getMessage());
 		Exception e3 = assertThrows(Exception.class, () -> mtiBuilder.function(null));
-		assertEquals("ISO Function is null", e3.getMessage());
+		assertEquals("Function is null", e3.getMessage());
 		Exception e4 = assertThrows(Exception.class, () -> mtiBuilder.origin(null));
-		assertEquals("ISO Origin is null", e4.getMessage());
+		assertEquals("Origin is null", e4.getMessage());
 	}
 	
 	@Test
