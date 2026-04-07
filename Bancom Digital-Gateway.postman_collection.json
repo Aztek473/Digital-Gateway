@@ -1,0 +1,95 @@
+{
+  "info": {
+    "_postman_id": "a6c701ac-b91b-4bea-9787-f971f5447008",
+    "name": "Bancom Digital-Gateway",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "5957259"
+  },
+  "item": [
+    {
+      "name": "transactions/transfer",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"productId\": \"TRANSF_INTRA\",\r\n  \"pan\": \"4111111111111111\",\r\n  \"amount\": 50000000,\r\n  \"currency\": \"604\",\r\n  \"terminalId\": \"BANCOM01\",\r\n  \"merchantId\": \"BANCOMDIGITAL\",\r\n  \"traceNumber\": \"987654\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/transactions/transfer",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "transactions",
+            "transfer"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "transactions/reversal",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"originalTraceNumber\": \"987654\",\r\n  \"amount\": 150000\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/transactions/reversal",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "transactions",
+            "reversal"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "transactions/status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/transactions/987654/status",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "transactions",
+            "987654",
+            "status"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
