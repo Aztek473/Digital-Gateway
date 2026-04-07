@@ -171,7 +171,7 @@ public enum EIsoField
 	
 	public String getDescription()
 	{
-		return description;
+		return this.toString() + " : " + description;
 	}
 	
 	public static EIsoField fromFieldNumber(int field)

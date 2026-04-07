@@ -39,5 +39,16 @@ public enum EIsoMessageClass
 		return description;
 	}
 	
+	public static EIsoMessageClass valueOfDigit(char digit)
+	{
+		for( EIsoMessageClass e : values() )
+		{
+			if( e.getDigit() == digit )
+			{
+				return e;
+			}
+		}
+		throw new IllegalArgumentException("No existe una versión ISO definida para el dígito: " + digit);
+	}
 	
 }

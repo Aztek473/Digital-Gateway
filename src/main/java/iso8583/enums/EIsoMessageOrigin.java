@@ -11,8 +11,17 @@ public enum EIsoMessageOrigin
 	ISSUER_REPEAT(		'3',	"Issuer Repeat"),
 	/** xxx4 - Other */
 	OTHER(				'4',	"Other"),
-	/** xxx5 - Other Repeat */
-	OTHER_REPEAT(		'5',	"Other Repeat");
+	/** xxx5 - Reserved by ISO 5 */
+	OTHER_5(			'5',	"Reserved by ISO 5"),
+	/** xxx6 - Reserved by ISO 6 */
+	OTHER_6(			'6',	"Reserved by ISO 6"),
+	/** xxx7 - Reserved by ISO 7 */
+	OTHER_7(			'7',	"Reserved by ISO 7"),
+	/** xxx8 - Reserved by ISO 8 */
+	OTHER_8(			'8',	"Reserved by ISO 8"),
+	/** xxx9 - Reserved by ISO 9 */
+	OTHER_9(			'9',	"Reserved by ISO 9"),
+	;
 	
 	private final char digit;
 	private final String description;
@@ -31,5 +40,17 @@ public enum EIsoMessageOrigin
 	public String getDescription()
 	{
 		return description;
+	}
+	
+	public static EIsoMessageOrigin valueOfDigit(char digit)
+	{
+		for( EIsoMessageOrigin e : values() )
+		{
+			if( e.getDigit() == digit )
+			{
+				return e;
+			}
+		}
+		throw new IllegalArgumentException("No existe una versión ISO definida para el dígito: " + digit);
 	}
 }

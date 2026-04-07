@@ -1,4 +1,5 @@
 package iso8583;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -8,10 +9,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import iso8583.builder.ISO8583Builder;
 import iso8583.builder.IsoMtiBuilder;
+import iso8583.enums.EIsoField;
 import iso8583.enums.EIsoMessageClass;
 import iso8583.enums.EIsoMessageFunction;
 import iso8583.enums.EIsoMessageOrigin;
@@ -24,7 +27,9 @@ class ISO8583BuilderTest
 	@BeforeEach
 	void setUp() throws Exception
 	{
-		IsoMtiBuilder mtiBuilder = new IsoMtiBuilder().version(EIsoVersion.V_1987).messageClass(EIsoMessageClass.FINANCIAL).function(EIsoMessageFunction.REQUEST_RESPONSE)
+		IsoMtiBuilder mtiBuilder = new IsoMtiBuilder().version(EIsoVersion.V_1987) //
+				.messageClass(EIsoMessageClass.FINANCIAL) //
+				.function(EIsoMessageFunction.REQUEST_RESPONSE) //
 				.origin(EIsoMessageOrigin.ACQUIRER);
 		mtiBase = mtiBuilder.build(); // Debería ser "0210"
 	}
@@ -38,9 +43,9 @@ class ISO8583BuilderTest
 			Map<Integer, String> fields = new HashMap<>();
 			// Activamos los campos 3 y 4
 			// DE_3: n 6 (Fijo Numérico) -> max 6
-			fields.put(3, "0100"); // Debería padearse a "000100" (agrega dos 0 a la izq)
+			fields.put(EIsoField.DE_3.getField(), "0100"); // Debería padearse a "000100" (agrega dos 0 a la izq)
 			// DE_4: n 12 (Fijo Numérico) -> max 12
-			fields.put(4, "5000"); // Debería padearse a "000000005000" (agrega ocho 0 a la izq)
+			fields.put(EIsoField.DE_4.getField(), "5000"); // Debería padearse a "000000005000" (agrega ocho 0 a la izq)
 			String result = builder.buildMessage(fields);
 			// MTI: 0210
 			// Bitmap Primario (Campos 3 y 4 activados):
@@ -50,6 +55,7 @@ class ISO8583BuilderTest
 			assertTrue(result.startsWith("02103000000000000000"), "Debe generar MTI + Bitmap correctamente");
 			assertTrue(result.contains("000100"), "Debe padear con ceros a la izquierda el campo 3");
 			assertTrue(result.endsWith("000000005000"), "Debe padear con ceros a la izquierda el campo 4");
+			System.out.println("Result : " + result);
 		}
 		catch (Exception e)
 		{
@@ -154,6 +160,48 @@ class ISO8583BuilderTest
 			// Simulamos lo que haría el receptor TCP: Reconstruir usando el Encoding oficial
 			String decodedString = new String(rawBytes, java.nio.charset.StandardCharsets.US_ASCII);
 			Assertions.assertEquals(expectedString, decodedString, "El byte array viaja codificado en ASCII correctamente, y es capaz de recuperar la trama");
+		}
+		catch (Exception e)
+		{
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	@DisplayName("1.2 Builder de mensaje ISO 8583 de respuesta")
+	void testBuildMessage_WithRealCompleteDump()
+	{
+		System.out.println("ISO8583BuilderTest.testBuildMessage_WithRealCompleteDump()");
+		try
+		{
+			ISO8583Builder builder = new ISO8583Builder("0200");
+			Map<Integer, String> fields = new HashMap<>();
+			
+			fields.put(EIsoField.DE_2.getField(), "4111111111111111");
+			fields.put(EIsoField.DE_3.getField(), "010000"); 
+			fields.put(EIsoField.DE_4.getField(), "000000050000");
+			fields.put(EIsoField.DE_7.getField(), "0405120000");
+			fields.put(EIsoField.DE_11.getField(), "000001");
+			fields.put(EIsoField.DE_12.getField(), "120000");
+			fields.put(EIsoField.DE_13.getField(), "0405");
+			fields.put(EIsoField.DE_22.getField(), "051");
+			fields.put(EIsoField.DE_25.getField(), "00");
+			fields.put(EIsoField.DE_37.getField(), "000000000001");
+			fields.put(EIsoField.DE_38.getField(), "123456");
+			fields.put(EIsoField.DE_39.getField(), "00");
+			fields.put(EIsoField.DE_41.getField(), "BANCOM01");
+			fields.put(EIsoField.DE_42.getField(), "BANCOMDIGITAL01");
+			fields.put(EIsoField.DE_49.getField(), "604");
+			
+			String result = builder.buildMessage(fields);
+			
+			System.out.println("Result : " + result);
+			
+			assertTrue(result.startsWith("0200"), "Debe de arrancar en 0200");
+			assertTrue(result.contains("164111111111111111"), "El PAN debió sumarle el LL 16 delante");
+//			assertEquals("0200F23AC48128E080000210411111111111111100000005000024040500000112000004056011101BANCOMDIGITAL     BANCOM001         000000000050000604", result); //FORMATO INCORRECTO
+//			assertEquals("0200F23AC48128E080000210411111111111111100000005000024040500000112000004056011101BANCOMDIGITALBANCOM001000000000050000604", result); //FORMATO INCORRECTO
+			assertEquals("0200723804800EC08000164111111111111111010000000000050000040512000000000112000004050510000000000000112345600BANCOM01BANCOMDIGITAL01604", result); //FORMATO CORRECTO
 		}
 		catch (Exception e)
 		{

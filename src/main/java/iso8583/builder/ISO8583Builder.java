@@ -1,4 +1,5 @@
 package iso8583.builder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -49,7 +50,7 @@ public class ISO8583Builder
 	public byte[] buildMessageBytes(Map<Integer, String> dataFields)
 	{
 		String payload = buildMessage(dataFields);
-		return payload.getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+		return payload.getBytes(StandardCharsets.US_ASCII);
 	}
 	
 	private String buildContinuousBitmap(Map<Integer, String> dataFields)
