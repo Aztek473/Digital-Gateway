@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import iso8583.builder.IsoMtiBuilder;
+import iso8583.builder.ISO8583Parser;
 import iso8583.enums.EIsoMessageClass;
 import iso8583.enums.EIsoMessageFunction;
 import iso8583.enums.EIsoMessageOrigin;
@@ -15,12 +15,12 @@ import iso8583.enums.EIsoVersion;
 
 class IsoMtiBuilderTest
 {
-	private IsoMtiBuilder mtiBuilder;
+	private ISO8583Parser mtiBuilder;
 	
 	@BeforeEach
 	void setUp()
 	{
-		mtiBuilder = new IsoMtiBuilder();
+		mtiBuilder = new ISO8583Parser();
 	}
 	
 	@Test

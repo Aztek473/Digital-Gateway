@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import iso8583.enums.EIsoField;
 import iso8583.parser.ISO8583Parser;
-import iso8583.parser.ParsedIsoMessage;
+import model.IsoMessage;
 
 class ISO8583ParserTest
 {
@@ -75,7 +75,7 @@ class ISO8583ParserTest
 					+ "604" // DE_49
 			;
 			ISO8583Parser parser = new ISO8583Parser();
-			ParsedIsoMessage result = parser.parseMessage(rawContiguousMessage);
+			IsoMessage result = parser.parseMessage(rawContiguousMessage);
 			assertNotNull(result);
 			assertEquals("0200", result.getMti(), "El MTI extraído debe ser 0200");
 			

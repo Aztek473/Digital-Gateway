@@ -5,10 +5,11 @@ import java.util.List;
 
 import iso8583.enums.EIsoField;
 import iso8583.enums.EIsoLengthType;
+import model.IsoMessage;
 
 public class ISO8583Parser
 {
-	public ParsedIsoMessage parseMessage(String rawMessage) throws Exception
+	public IsoMessage parseMessage(String rawMessage) throws Exception
 	{
 		if( rawMessage == null || rawMessage.length() < 20 )
 		{
@@ -100,7 +101,7 @@ public class ISO8583Parser
 			throw new Exception("La trama es invalida al ISO 8583.");
 		}
 		
-		return new ParsedIsoMessage(mti, parsedFields);
+		return new IsoMessage(mti, parsedFields);
 	}
 	
 	/**

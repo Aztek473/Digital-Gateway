@@ -1,4 +1,4 @@
-package iso8583.parser;
+package model;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import iso8583.enums.EIsoMessageFunction;
 import iso8583.enums.EIsoMessageOrigin;
 import iso8583.enums.EIsoVersion;
 
-public class ParsedIsoMessage
+public class IsoMessage
 {
 	private final String mti;
 	
@@ -18,7 +18,7 @@ public class ParsedIsoMessage
 	
 	private final Map<Integer, String> parsedFields;
 	
-	public ParsedIsoMessage(String mti, Map<Integer, String> parsedFields)
+	public IsoMessage(String mti, Map<Integer, String> parsedFields)
 	{
 		this.mti = mti;
 		this.parsedFields = parsedFields;

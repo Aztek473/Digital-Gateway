@@ -16,7 +16,7 @@ public class ISO8583Builder
 		this.mti = mti;
 	}
 	
-	public ISO8583Builder(IsoMtiBuilder mtiBuilder) throws Exception
+	public ISO8583Builder(ISO8583Parser mtiBuilder) throws Exception
 	{
 		this.mti = mtiBuilder.build();
 	}

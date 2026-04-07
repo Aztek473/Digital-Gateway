@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<productRules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ 
+  <product id="TRANSF_INTRA" name="Transferencia intrabancaria">
+    <processingCode>400000</processingCode>
+    <mti>0200</mti>
+    <limits currency="PEN">
+      <minAmount>100</minAmount>
+      <maxAmount>50000000</maxAmount>  <!-- en céntimos -->
+      <dailyLimit>200000000</dailyLimit>
+    </limits>
+    <requiredFields>
+      <field de="2" name="PAN"/>
+      <field de="3" name="processingCode"/>
+      <field de="4" name="amount"/>
+      <field de="49" name="currency"/>
+    </requiredFields>
+    <schedule>
+      <availableFrom>00:00</availableFrom>
+      <availableTo>23:59</availableTo>
+      <availableDays>MON TUE WED THU FRI SAT SUN</availableDays>
+    </schedule>
+  </product>
+ 
+  <product id="TRANSF_INTER" name="Transferencia interbancaria (CCI)">
+    <processingCode>401000</processingCode>
+    <mti>0200</mti>
+    <limits currency="PEN">
+      <minAmount>100</minAmount>
+      <maxAmount>30000000</maxAmount>
+      <dailyLimit>100000000</dailyLimit>
+    </limits>
+    <requiredFields>
+      <field de="2" name="PAN"/>
+      <field de="3" name="processingCode"/>
+      <field de="4" name="amount"/>
+      <field de="102" name="accountFrom"/>
+      <field de="103" name="accountTo"/>
+      <field de="49" name="currency"/>
+    </requiredFields>
+    <schedule>
+      <availableFrom>08:00</availableFrom>
+      <availableTo>21:00</availableTo>
+      <availableDays>MON TUE WED THU FRI</availableDays>
+    </schedule>
+  </product>
+ 
+  <product id="PAGO_SERVICIO" name="Pago de servicio">
+    <processingCode>180000</processingCode>
+    <mti>0200</mti>
+    <limits currency="PEN">
+      <minAmount>50</minAmount>
+      <maxAmount>999999900</maxAmount>
+      <dailyLimit>999999900</dailyLimit>
+    </limits>
+    <requiredFields>
+      <field de="4" name="amount"/>
+      <field de="18" name="merchantCategory"/>
+      <field de="49" name="currency"/>
+    </requiredFields>
+    <schedule>
+      <availableFrom>00:00</availableFrom>
+      <availableTo>23:59</availableTo>
+      <availableDays>MON TUE WED THU FRI SAT SUN</availableDays>
+    </schedule>
+  </product>
+ 
+</productRules>

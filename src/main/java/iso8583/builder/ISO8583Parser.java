@@ -4,14 +4,14 @@ import iso8583.enums.EIsoMessageFunction;
 import iso8583.enums.EIsoMessageOrigin;
 import iso8583.enums.EIsoVersion;
 
-public class IsoMtiBuilder
+public class ISO8583Parser
 {
 	private EIsoVersion version;
 	private EIsoMessageClass messageClass;
 	private EIsoMessageFunction function;
 	private EIsoMessageOrigin origin;
 	
-	public IsoMtiBuilder version(EIsoVersion version) throws Exception
+	public ISO8583Parser version(EIsoVersion version) throws Exception
 	{
 		if( version != null )
 		{
@@ -24,7 +24,7 @@ public class IsoMtiBuilder
 		}
 	}
 	
-	public IsoMtiBuilder messageClass(EIsoMessageClass messageClass) throws Exception
+	public ISO8583Parser messageClass(EIsoMessageClass messageClass) throws Exception
 	{
 		if( messageClass != null )
 		{
@@ -37,7 +37,7 @@ public class IsoMtiBuilder
 		}
 	}
 	
-	public IsoMtiBuilder function(EIsoMessageFunction function) throws Exception
+	public ISO8583Parser function(EIsoMessageFunction function) throws Exception
 	{
 		if( function != null )
 		{
@@ -50,7 +50,7 @@ public class IsoMtiBuilder
 		}
 	}
 	
-	public IsoMtiBuilder origin(EIsoMessageOrigin origin) throws Exception
+	public ISO8583Parser origin(EIsoMessageOrigin origin) throws Exception
 	{
 		if( origin != null )
 		{
