@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import core.ledger.exception.CoreTimeoutException;
 import iso8583.builder.ISO8583Builder;
 import iso8583.enums.EIsoField;
 import iso8583.parser.ISO8583Parser;

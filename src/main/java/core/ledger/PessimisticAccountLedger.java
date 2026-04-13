@@ -4,6 +4,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import core.ledger.exception.InsufficientFundsException;
+import core.ledger.exception.LockTimeoutException;
+import core.ledger.interfaces.AccountLedger;
+
 public class PessimisticAccountLedger implements AccountLedger
 {
 	// Lock físico separado e independiente por cada cuenta diferente

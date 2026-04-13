@@ -1,4 +1,7 @@
-package core.ledger;
+package core.ledger.interfaces;
+
+import core.ledger.exception.InsufficientFundsException;
+
 public interface AccountLedger
 {
 	// Debita amount de la cuenta accountId.

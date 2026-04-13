@@ -3,6 +3,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
+import core.ledger.exception.ConcurrentUpdateException;
+import core.ledger.exception.InsufficientFundsException;
+import core.ledger.interfaces.AccountLedger;
+
 public class OptimisticAccountLedger implements AccountLedger
 {
 	record AccountEntry(long balance, long version)
