@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import iso8583.enums.EIsoField;
 import model.IsoMessage;
 import model.ValidationResult;
 
@@ -27,10 +28,24 @@ class ProductRuleValidatorTest
 				<?xml version="1.0" encoding="UTF-8"?>
 				<productRules>
 				  <product id="TRANSF_MOCK">
+				  
 				    <processingCode>200000</processingCode>
-				    <limits currency="PEN"><minAmount>100</minAmount><maxAmount>5000000</maxAmount></limits>
-				    <requiredFields><field de="2" name="PAN"/><field de="4" name="amount"/></requiredFields>
-				    <schedule><availableFrom>00:00</availableFrom><availableTo>23:59</availableTo><availableDays>MON TUE WED THU FRI SAT SUN</availableDays></schedule>
+				    
+				    <limits currency="PEN">
+				    	<minAmount>100</minAmount>
+				    	<maxAmount>5000000</maxAmount>
+				    	<dailyLimit>200000000</dailyLimit>
+			    	</limits>
+			    	
+				    <requiredFields><field de="2" name="PAN"/>
+				    	<field de="4" name="amount"/>
+			    	</requiredFields>
+			    	
+				    <schedule>
+				    	<availableFrom>00:00</availableFrom>
+				    	<availableTo>23:59</availableTo>
+				    	<availableDays>MON TUE WED THU FRI SAT SUN</availableDays>
+			    	</schedule>
 				  </product>
 				</productRules>
 				""";
@@ -63,9 +78,9 @@ class ProductRuleValidatorTest
 	void testValidate_FallaPorMontoInferior()
 	{
 		Map<Integer, String> fields = new HashMap<>();
-		fields.put(3, "200000"); // Código del XML duro
-		fields.put(2, "411111111111");
-		fields.put(4, "50"); // 50 céntimos (exigía mínimo 100)
+		fields.put(EIsoField.DE_2.getField(), "411111111111");
+		fields.put(EIsoField.DE_3.getField(), "200000"); // Código del XML duro
+		fields.put(EIsoField.DE_4.getField(), "50"); // 50 céntimos (exigía mínimo 100)
 		IsoMessage message = new IsoMessage("0200", fields);
 		ValidationResult result = validator.validate(message);
 		assertFalse(result.isValid());
@@ -77,8 +92,8 @@ class ProductRuleValidatorTest
 	void testValidate_FallaPorFaltaDeCampoObligatorio()
 	{
 		Map<Integer, String> fields = new HashMap<>();
-		fields.put(3, "200000"); // Código del XML duro
-		fields.put(4, "5000");
+		fields.put(EIsoField.DE_3.getField(), "200000"); // Código del XML duro
+		fields.put(EIsoField.DE_4.getField(), "5000");
 		// Falta intencionalmente el DE_2 (PAN) para forzar falla de Required Fields
 		IsoMessage message = new IsoMessage("0200", fields);
 		ValidationResult result = validator.validate(message);
@@ -91,11 +106,17 @@ class ProductRuleValidatorTest
 	void testValidate_TransaccionExitosa()
 	{
 		Map<Integer, String> fields = new HashMap<>();
-		fields.put(3, "200000"); // Código correcto
-		fields.put(2, "4111111111111111"); // PAN presente y válido
-		fields.put(4, "1500"); // Monto intermedio perfecto(>100 y <5000000)
+		fields.put(EIsoField.DE_2.getField(), "4111111111111111"); // PAN presente y válido
+		fields.put(EIsoField.DE_3.getField(), "200000"); // Código correcto
+		fields.put(EIsoField.DE_4.getField(), "1500"); // Monto intermedio perfecto(>100 y <5000000)
 		IsoMessage message = new IsoMessage("0200", fields);
 		ValidationResult result = validator.validate(message);
+		
+		for( String error : result.errors() )
+		{
+			System.out.println("ERROR : " + error);
+		}
+		
 		assertTrue(result.isValid(), "No debió emitir fallas, la trama encaja perfecto en las reglas DTO hardcodeadas.");
 	}
 }
